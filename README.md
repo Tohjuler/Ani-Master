@@ -7,7 +7,7 @@
 
 > The hub for anime and all related content.
 
-> **Warning**
+> [!WARNING]
 > The project is still in the early stages of development. But if you are interested, then star the project and come back later.
 
 ## Table of Contents
