@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">Ani-Master</h1>
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=react,nextjs,ts" />
+  <br/>
+</p>
+<br/><br/>
 
-## Getting Started
+> The hub for anime and all related content.
 
-First, run the development server:
+> **Warning**
+> The project is still in the early stages of development. But if you are interested, then star the project and come back later.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Table of Contents
+* [General Info](#general-information)
+* [Tech Tack](#tech-stack)
+* [Features](#features)
+* [Screenshots](#screenshots)
+* [Setup](#setup)
+* [Project Status](#project-status)
+* [Acknowledgements](#acknowledgements)
+* [Contact](#contact)
+<!-- * [License](#license) -->
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡General Information
+This project was started because I was tired of having to use the public websites.
+There are some that is fine, but you almost always have to deal with ads and popups.
+Also, you needed a VPN for security and privacy.
+So I started to look for a website I could self-host, but there was none good enough.
+<br>
+So I decided to make my own.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+### 🥅The Goal
+- [ ] A website that is easy to use.
+- [ ] A website that is easy to self-host.
+- [ ] A website that is easy to maintain.
+- [ ] A website that is easy to update.
+- [ ] A place where there is everything you need.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧬Tech Stack
+- [Next.Js](https://nextjs.org/) V.14 - Frontend
+  - [Shadcn/UI](https://ui.shadcn.com/) - UI Library
+- SQLite - Database
+- [Lucia-Auth](https://lucia-auth.com/) V.2.7.6 - Auth
+- [Consumet.org](https://github.com/consumet/api.consumet.org) V.1.5.5 - Content API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## 🔥Features
+🟢List the ready features here:
+- None yet
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+🟡Currently working on:
+- Main page
+- Anime page
+- Search page
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+🔴Next features:
+- Main structure
+  - More...
+- Auth
+- Basic Anime Watching
+- Cache
+
+## 🎦Screenshots
+Anime search page (Work in progress, not finished)
+<img src="./.github/images/anime_search_page.png"/>
+
+Anime page (Work in progress, not finished)
+<img src="./.github/images/anime_page.png"/>
+
+## 🔨Setup
+
+### 💻Local Development
+1. Clone the repo
+2. Install dependencies `npm install`
+3. Start the server `npm run dev`
+
+
+## 🚦Project Status
+Project is: **_in progress_**
+
+
+## 📝Contribution
+Contributions are always welcome!
+Contributions can be given in the form of:
+- Code (PR)
+- Documentation (PR)
+- Ideas (Issues)
+- Bug reports (Issues)
+
+## 🪙Acknowledgements
+Give credit here.
+- Maby coming...
+
+
+## 📱Contact
+You can contact me with this email `tobias@tohjuler.dk`
+
+
+<!-- Optional -->
+<!-- ## License -->
+<!-- This project is open source and available under the [... License](). -->
