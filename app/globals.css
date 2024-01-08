@@ -68,7 +68,7 @@ body {
 /* Firefox */
 * {
     scrollbar-width: auto;
-    scrollbar-color: #646262 transparent;
+    scrollbar-color: #581c87 transparent;
 }
 
 /* Chrome, Edge, and Safari */
@@ -81,6 +81,6 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #808080;
+    background-color: #581c87;
     border-radius: 10px;
 }

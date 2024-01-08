@@ -3,21 +3,9 @@ import Footer from "@/components/footer";
 import {getPageSession} from "@/lib/lucia";
 import {IAnimeEpisode, ITitle, META, ANIME} from "@consumet/extensions";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import parse from "html-react-parser";
-import VideoPlayer from "@/components/videoPlayer";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {Separator} from "@/components/ui/separator"
-import ProviderStatus from "@/lib/providerStatus";
 import Link from "next/link";
-import {Button} from "@/components/ui/button";
+import AnimeWatch from "@/components/animeWatch";
 
 const messagePage = (title: string, message: string, session: any) => (
     <main className="">
@@ -108,47 +96,7 @@ export default async function AnimePage({params, searchParams}: {
                         </Card>
                     </div>
                     <div className="w-[97%] mx-auto col-span-3">
-                        <VideoPlayer className="rounded w-full" postImage={currentEp?.image || ""}
-                                     src={currentEpSource?.sources.filter((s) => s.quality === '1080p')?.[0].url || ""}/>
-
-                        <div className="w-full bg-purple-900 rounded p-2 mt-3 inline-flex">
-                            <h2>{currentEpNumber} - {currentEp?.title}</h2>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button className="mx-3" variant="secondary" size="sm">
-                                        {searchParams?.provider || "GogoAnime"}
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    {
-                                        (await ProviderStatus.getOnlineAnimeProvider()).map((provider) => {
-                                            return (
-                                                <DropdownMenuItem key={provider} asChild>
-                                                    <Link href={changeSetting("provider", provider)}>
-                                                        <DropdownMenuLabel>{provider}</DropdownMenuLabel>
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                            )
-                                        })
-                                    }
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-
-                        <div className="mt-5 rounded p-2 bg-[#292996]">
-                            <h1>Episodes</h1>
-                            <Tabs defaultValue={dub ? "dub" : "sub"} className="w-full">
-                                <TabsList>
-                                    <TabsTrigger value="sub">Sub</TabsTrigger>
-                                    <TabsTrigger value="dub">Dub</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="sub"
-                                             className="flex flex-wrap">{getEpisodeList(subEps || [], false, changeSetting)}</TabsContent>
-                                <TabsContent value="dub"
-                                             className="flex flex-wrap">{getEpisodeList(dubEps || [], true, changeSetting)}</TabsContent>
-                            </Tabs>
-                        </div>
+                        <AnimeWatch animeId={animeId} searchParams={searchParams}/>
                     </div>
                 </div>
             </div>
@@ -168,7 +116,7 @@ function getEpisodeList(episodes: IAnimeEpisode[], dub: boolean, changeSetting: 
     })
 }
 
-function getProvier(provider: string) {
+export function getProvier(provider: string) {
     switch (provider.toLowerCase()) {
         case "9anime":
             return new ANIME.NineAnime();

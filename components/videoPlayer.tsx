@@ -2,13 +2,15 @@
 
 import {useEffect, useRef} from 'react';
 import Hls from 'hls.js';
-import Plyr, {Options} from 'plyr';
+import {Options} from 'plyr';
 import 'plyr/dist/plyr.css';
 
-export default function VideoPlayer(props: { src: string, className: string, postImage: string }) {
+export default function VideoPlayer(props: { src: string, className: string, postImage: string, referer?: string }) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
+        const Plyr = require('plyr');
+
         const video = videoRef.current;
         if (!video) return;
 
@@ -42,7 +44,12 @@ export default function VideoPlayer(props: { src: string, className: string, pos
         } else if (Hls.isSupported()) {
             // This will run in all other modern browsers
 
-            const hls = new Hls();
+            const hls = new Hls({
+                xhrSetup: (xhr, url) => {
+                    if (props.referer)
+                        xhr.setRequestHeader('Referer', props.referer)
+                }
+            });
             hls.loadSource(props.src);
             const player = new Plyr(video, defaultOptions);
             hls.attachMedia(video);

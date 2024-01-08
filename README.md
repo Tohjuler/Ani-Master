@@ -3,9 +3,9 @@
   <img src="https://skillicons.dev/icons?i=react,nextjs,ts" />
   <br/>
 </p>
+<p align="center">The hub for anime and all related content.</p>
 <br/><br/>
 
-> The hub for anime and all related content.
 
 > [!WARNING]
 > The project is still in the early stages of development. But if you are interested, then star the project and come back later.
@@ -18,8 +18,6 @@
 * [Setup](#setup)
 * [Project Status](#project-status)
 * [Acknowledgements](#acknowledgements)
-* [Contact](#contact)
-<!-- * [License](#license) -->
 
 
 ## ⚡General Information
@@ -93,12 +91,3 @@ Contributions can be given in the form of:
 ## 🪙Acknowledgements
 Give credit here.
 - Maby coming...
-
-
-## 📱Contact
-You can contact me with this email `tobias@tohjuler.dk`
-
-
-<!-- Optional -->
-<!-- ## License -->
-<!-- This project is open source and available under the [... License](). -->

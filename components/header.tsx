@@ -67,7 +67,7 @@ export function Header(props: { session: any, page: 'home' | 'anime' | 'manga' }
         'manga': 'from-green-900'
     }
     return (
-        <div className={"w-full pb-5 flex bg-gradient-to-b " + pageColor[props.page]}>
+        <div className={"w-full pb-5 flex bg-gradient-to-b p-2 " + pageColor[props.page]}>
             <NavigationMenu className="mx-auto">
                 <NavigationMenuList>
                     <NavigationMenuItem>
