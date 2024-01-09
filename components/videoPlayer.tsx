@@ -5,7 +5,7 @@ import Hls from 'hls.js';
 import {Options} from 'plyr';
 import 'plyr/dist/plyr.css';
 
-export default function VideoPlayer(props: { src: string, className: string, postImage: string, referer?: string }) {
+export default function VideoPlayer(props: { src: string, className: string, postImage: string, referer?: string, startTime?: number, updateProgressData: (progress: number) => void }) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -58,9 +58,26 @@ export default function VideoPlayer(props: { src: string, className: string, pos
                 'This is an old browser that does not support MSE https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API'
             );
         }
+
+        if (props.startTime)
+            video.currentTime = props.startTime;
     }, [props.src, videoRef]);
 
     return (
-        <video data-poster={props.postImage} data-displaymaxtap ref={videoRef} className={props.className}/>
+        <video
+            data-poster={props.postImage}
+            data-displaymaxtap
+            ref={videoRef}
+            className={props.className}
+            // Update progress
+            onEnded={() => {
+                if (!videoRef.current) return;
+                props.updateProgressData(videoRef.current.duration);
+            }}
+            onPause={() => {
+                if (!videoRef.current) return;
+                props.updateProgressData(videoRef.current.currentTime);
+            }}
+        />
     );
 }

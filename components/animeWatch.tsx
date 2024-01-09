@@ -15,9 +15,13 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {WatchResponse} from "@/app/api/anime/watch/[epid]/route";
 import {Skeleton} from "@/components/ui/skeleton";
-import {IAnimeEpisode, ISource} from "@consumet/extensions";
+import {IAnimeEpisode} from "@consumet/extensions";
+import {AnimeWatchData} from "@/lib/dbUtil"
+import {updateAnimeWatch} from "@/lib/dbUtilActions";
 
 export default function AnimeWatch(props: {
+    session: any,
+    watchData: AnimeWatchData | null,
     animeId: string,
     searchParams?: { [key: string]: string | string[] | undefined }
 }) {
@@ -44,12 +48,13 @@ export default function AnimeWatch(props: {
         }).then((res) => {
             setSubEps(res.data.sub);
             setDubEps(res.data.dub);
+            console.log(res.data?.responseTime || "");
 
-            const newEp = (dub === "true" ? res.data.dub : res.data.sub).find((ep2: IAnimeEpisode) => ep2.number === parseInt(ep));
-            if (newEp) setEpId(newEp.id);
-
-            console.log('Fetched episodes data', res.data)
-            console.log('Current episode', newEp)
+            if (props.watchData) setEpId(props.watchData.current_episode + "")
+            else {
+                const newEp = (dub === "true" ? res.data.dub : res.data.sub).find((ep2: IAnimeEpisode) => ep2.number === parseInt(ep));
+                if (newEp) setEpId(newEp.id);
+            }
         }).catch((err) => {
             console.error(err);
             if (err.response.status === 404) return setError("Anime not found");
@@ -86,7 +91,7 @@ export default function AnimeWatch(props: {
     useEffect(() => {
         if (qualities.length === 0) return;
         setCurrentQuality(qualities[0]);
-        if (qualities?.includes("1080p")) setCurrentQuality("auto");
+        if (qualities?.includes("auto")) setCurrentQuality("auto");
         if (qualities?.includes("1080p")) setCurrentQuality("1080p");
     }, [qualities]);
 
@@ -109,6 +114,11 @@ export default function AnimeWatch(props: {
             <VideoPlayer className="rounded w-full" postImage={currentEp?.image || ""}
                          src={data?.sources?.sources.find((s) => s.quality === currentQuality)?.url || ""}
                          referer={data?.sources?.headers?.referer || ""}
+                         updateProgressData={(progress) => {
+                                if (!props.session || !epId) return;
+                                updateAnimeWatch(props.session.user.userId, props.animeId, epId, progress).catch((err) => console.log(err.message));
+                         }}
+                         startTime={props.watchData?.current_progress || undefined}
             />
 
             <div className="w-full bg-purple-900 rounded p-2 mt-3 inline-flex">
@@ -185,7 +195,9 @@ export default function AnimeWatch(props: {
                     }, epId)}</TabsContent>
                 </Tabs>
             </div>
+            <h2 className="text-[10px] m-1">Content Fetch Time: {data.responseTime?.toFixed(2) || "?"} ms</h2>
         </div>
+
     )
 }
 

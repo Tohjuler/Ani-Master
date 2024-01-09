@@ -6,11 +6,13 @@ import {IAnimeEpisode, META} from "@consumet/extensions";
 export interface EpsResponse {
     sub: IAnimeEpisode[] | null,
     dub: IAnimeEpisode[] | null,
-    provider: string
+    provider: string,
+    responseTime: number
 }
 
 export const GET = async (req: NextRequest, params: { params: { animeid: string } }) => {
     if (cacheData.get(req.nextUrl.href)) return NextResponse.json<EpsResponse>(cacheData.get(req.nextUrl.href), {status: 200});
+    const start = performance.now();
 
     const searchParams = new URLSearchParams(req.nextUrl.searchParams);
     const animeId = params.params.animeid;
@@ -26,7 +28,8 @@ export const GET = async (req: NextRequest, params: { params: { animeid: string 
     const data: EpsResponse = {
         sub: subEps,
         dub: dubEps,
-        provider: anilist.provider.name
+        provider: anilist.provider.name,
+        responseTime: performance.now() - start
     }
 
     cacheData.put(req.nextUrl.href, data, 1000 * 60 * 30);

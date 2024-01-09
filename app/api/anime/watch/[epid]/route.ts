@@ -7,11 +7,13 @@ import {ISource, META} from "@consumet/extensions";
 export interface WatchResponse {
     sources: ISource | null
     onlineProviders: string[],
-    provider: string
+    provider: string,
+    responseTime: number
 }
 
 export const GET = async (req: NextRequest, params: { params: { epid: string } }) => {
     if (cacheData.get(req.nextUrl.href)) return NextResponse.json<WatchResponse>(cacheData.get(req.nextUrl.href), {status: 200});
+    const start = performance.now();
 
     const searchParams = new URLSearchParams(req.nextUrl.searchParams);
 
@@ -25,7 +27,8 @@ export const GET = async (req: NextRequest, params: { params: { epid: string } }
     const data: WatchResponse = {
         sources: currentEpSource,
         onlineProviders: await ProviderStatus.getOnlineAnimeProvider(),
-        provider: anilist.provider.name
+        provider: anilist.provider.name,
+        responseTime: performance.now() - start
     }
 
     cacheData.put(req.nextUrl.href, data, 1000 * 60 * 30);

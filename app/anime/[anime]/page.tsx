@@ -6,6 +6,8 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import parse from "html-react-parser";
 import Link from "next/link";
 import AnimeWatch from "@/components/animeWatch";
+import {AnimeWatchData} from "@/lib/dbUtil";
+import {query} from "@/lib/dbUtilActions";
 
 const messagePage = (title: string, message: string, session: any) => (
     <main className="">
@@ -34,6 +36,9 @@ export default async function AnimePage({params, searchParams}: {
     searchParams?: { [key: string]: string | string[] | undefined };
 }) {
     const session = await getPageSession();
+    let watchData: AnimeWatchData | null = null;
+    if (session)
+        watchData = await query('SELECT * FROM anime_watch WHERE user_id = ? AND anime_id = ? LIMIT 1', [session.user.userId, params.anime]).then((res) => res[0] as AnimeWatchData).catch(() => null);
     const animeId = params.anime;
 
     if (!animeId || animeId === "" || animeId === "undefined") return messagePage("Anime not found", "", session);
@@ -96,7 +101,7 @@ export default async function AnimePage({params, searchParams}: {
                         </Card>
                     </div>
                     <div className="w-[97%] mx-auto col-span-3">
-                        <AnimeWatch animeId={animeId} searchParams={searchParams}/>
+                        <AnimeWatch session={session} watchData={watchData} animeId={animeId} searchParams={searchParams}/>
                     </div>
                 </div>
             </div>
