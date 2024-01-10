@@ -24,7 +24,7 @@ export default function AccSettings(props: { session: any, onlineProviders: stri
                     </SelectTrigger>
                     <SelectContent>
                         {
-                            props.onlineProviders.map((provider) => {
+                            props.onlineProviders.filter((item, pos) => props.onlineProviders.indexOf(item) == pos).map((provider) => {
                                 return (
                                     <SelectItem key={provider} value={provider.toLowerCase()}>{provider}</SelectItem>
                                 )
@@ -51,30 +51,39 @@ export default function AccSettings(props: { session: any, onlineProviders: stri
                     <div className="ml-2">
                         <h4 className="font-bold mb-2">NTFY</h4>
 
-                        <Label htmlFor="ntfy-url">Url</Label>
+                        <Label htmlFor="notify_ntfy_url">Url</Label>
                         <Input
                             defaultValue={props.session.settings.notify_ntfy_url || ""}
                             className="max-w-[400px]"
                             type="url"
-                            id="ntfy-url"
+                            name="notify_ntfy_url"
+                            id="notify_ntfy_url"
                             placeholder="Url..."
                         />
 
                         <div className="mt-2">
-                            <Label htmlFor="ntfy-token">Auth Token</Label>
-                            <Input defaultValue={props.session.settings.notify_ntfy_token || ""}
-                                   className="max-w-[400px]"
-                                   type="token" id="ntfy-token" placeholder="Token..."/>
+                            <Label htmlFor="notify_ntfy_token">Auth Token</Label>
+                            <Input
+                                defaultValue={props.session.settings.notify_ntfy_token || ""}
+                                className="max-w-[400px]"
+                                type="token"
+                                name="notify_ntfy_token"
+                                id="notify_ntfy_token"
+                                placeholder="Token..."/>
                         </div>
                     </div>
 
                     <div className="ml-2 mt-5">
                         <h4 className="font-bold mb-2">Discord Webhook</h4>
 
-                        <Label htmlFor="ntfy-url">Url</Label>
-                        <Input defaultValue={props.session.settings.notify_discord_webhook || ""}
-                               className="max-w-[400px]"
-                               type="url" id="ntfy-url" placeholder="Url..."/>
+                        <Label htmlFor="notify_discord_token">Url</Label>
+                        <Input
+                            defaultValue={props.session.settings.notify_discord_webhook || ""}
+                            className="max-w-[400px]"
+                            type="url"
+                            name="notify_discord_token"
+                            id="notify_discord_token"
+                            placeholder="Url..."/>
                     </div>
 
                     <div className="mt-5">

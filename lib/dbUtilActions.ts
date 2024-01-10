@@ -7,18 +7,30 @@ async function query(sql: string, params: any) {
     return stmt.all(params);
 }
 
-async function updateAnimeWatch(user_id: string, anime_id: string, current_episode: string, current_progress: number) {
+export interface AnimeWatchDisplayData {
+    poster: string,
+    title: string,
+    episodeNumber: number,
+    totalEpisodes: number
+}
+
+async function updateAnimeWatch(user_id: string, anime_id: string, current_episode: string, current_progress: number, current_progress_out_of: number, displayData: AnimeWatchDisplayData) {
     if (!user_id || !anime_id || !current_episode || !current_progress) return;
 
     // If anime watch exists, update it else create it
     const stmt = DbUtil.db.prepare("SELECT * FROM anime_watch WHERE user_id = ? AND anime_id = ?");
     const animeWatch: AnimeWatchData = stmt.get(user_id, anime_id) as AnimeWatchData;
-    if (animeWatch) {
-        const stmt = DbUtil.db.prepare("UPDATE anime_watch SET current_episode = ?, current_progress = ? WHERE id = ?");
-        stmt.run(current_episode, current_progress, animeWatch.id);
+    if (animeWatch && animeWatch.current_episode === current_episode) { // If episode is the same, only update progress
+        const stmt = DbUtil.db.prepare("UPDATE anime_watch SET current_progress = ? WHERE user_id = ? AND anime_id = ?");
+        stmt.run(current_progress, user_id, anime_id);
+    } else if (animeWatch) { // If episode is different, update episode and progress
+        const stmt =
+            DbUtil.db.prepare("UPDATE anime_watch SET current_episode = ?, current_episode_number = ?, current_episode_poster = ?, current_progress = ?, current_progress_out_of = ?  WHERE user_id = ? AND anime_id = ?");
+        stmt.run(current_episode, displayData.episodeNumber, displayData.poster, current_progress, displayData.totalEpisodes, user_id, anime_id);
     } else {
-        const stmt = DbUtil.db.prepare("INSERT INTO anime_watch (id, user_id, anime_id, current_episode, current_progress) VALUES (?, ?, ?, ?, ?)");
-        stmt.run(user_id, anime_id, current_episode, current_progress);
+        const stmt =
+            DbUtil.db.prepare("INSERT INTO anime_watch (user_id, anime_id, title, total_episodes, current_episode, current_episode_number, current_episode_poster, current_progress, current_progress_out_of) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        stmt.run(user_id, anime_id, displayData.title, displayData.totalEpisodes, current_episode, displayData.episodeNumber, displayData.poster, current_progress, current_progress_out_of);
     }
 }
 

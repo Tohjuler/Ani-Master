@@ -18,13 +18,10 @@ export default function Footer() {
                 <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
                     <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                         <li>
-                            <a href="#" className="hover:underline me-4 md:me-6">About</a>
+                            <a href="https://github.com/Tohjuler/Ani-Master?tab=MIT-1-ov-file" className="hover:underline me-4 md:me-6">Licensing</a>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline me-4 md:me-6">Licensing</a>
-                        </li>
-                        <li>
-                            <a href="#" className="hover:underline">Github</a>
+                            <a href="https://github.com/Tohjuler/Ani-Master" className="hover:underline">Github</a>
                         </li>
                     </ul>
                 </span>

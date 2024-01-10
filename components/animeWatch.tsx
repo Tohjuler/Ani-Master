@@ -22,21 +22,25 @@ import {updateAnimeWatch} from "@/lib/dbUtilActions";
 export default function AnimeWatch(props: {
     session: any,
     watchData: AnimeWatchData | null,
+    settings: { default_provider_anime: string, default_dubbed_anime: number } | null,
     animeId: string,
+    animeInfo: {title: string, totalEpisodes: number},
     searchParams?: { [key: string]: string | string[] | undefined }
 }) {
     const [data, setData] = useState<WatchResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [provider, setProvider] = useState<string>(props.searchParams?.provider as string || "Gogoanime");
+    const [provider, setProvider] = useState<string>(
+        props.searchParams?.provider as string || props.settings ? props.settings?.default_provider_anime || "Gogoanime" : "Gogoanime"
+    );
     const [ep, setEp] = useState<string>(props.searchParams?.ep as string || "1");
     const [epId, setEpId] = useState<string | null>(null);
-    const [dub, setDub] = useState<string>(props.searchParams?.dub === "true" ? "true" : "false");
+    const [dub, setDub] = useState<string>(
+        props.searchParams?.dub === "true" ? "true" : props.settings ? (props.settings?.default_dubbed_anime === 1) + "" || "false" : "false"
+    );
     const [subEps, setSubEps] = useState<IAnimeEpisode[]>([]);
     const [dubEps, setDubEps] = useState<IAnimeEpisode[]>([]);
     const [qualities, setQualities] = useState<string[]>([]);
     const [currentQuality, setCurrentQuality] = useState<string | null>(null);
-
-    // TODO: Ep cache
 
     useEffect(() => {
         setData(null);
@@ -114,9 +118,21 @@ export default function AnimeWatch(props: {
             <VideoPlayer className="rounded w-full" postImage={currentEp?.image || ""}
                          src={data?.sources?.sources.find((s) => s.quality === currentQuality)?.url || ""}
                          referer={data?.sources?.headers?.referer || ""}
-                         updateProgressData={(progress) => {
+                         updateProgressData={(progress, outOf) => {
                                 if (!props.session || !epId) return;
-                                updateAnimeWatch(props.session.user.userId, props.animeId, epId, progress).catch((err) => console.log(err.message));
+                                updateAnimeWatch(
+                                    props.session.user.userId,
+                                    props.animeId,
+                                    epId,
+                                    progress,
+                                    outOf,
+                                    {
+                                        title: props.animeInfo.title, // Anime title
+                                        poster: currentEp?.image || "",
+                                        episodeNumber: currentEp?.number || 0,
+                                        totalEpisodes: props.animeInfo.totalEpisodes,
+                                    }
+                                ).catch((err) => console.log(err.message));
                          }}
                          startTime={props.watchData?.current_progress || undefined}
             />
@@ -124,7 +140,7 @@ export default function AnimeWatch(props: {
             <div className="w-full bg-purple-900 rounded p-2 mt-3 inline-flex">
                 <h2 className="mt-2">{currentEp?.number} - {currentEp?.title} {dub === "true" ? "(Dub)" : null}</h2>
 
-                <Select value={provider} onValueChange={setProvider}>
+                <Select value={provider.toLowerCase()} onValueChange={setProvider}>
                     <SelectTrigger className="w-[180px] mx-5">
                         <SelectValue placeholder="Provider"/>
                     </SelectTrigger>
@@ -132,7 +148,7 @@ export default function AnimeWatch(props: {
                         {
                             data?.onlineProviders.map((provider) => {
                                 return (
-                                    <SelectItem key={provider} value={provider}>{provider}</SelectItem>
+                                    <SelectItem key={provider} value={provider.toLowerCase()}>{provider}</SelectItem>
                                 )
                             })
                         }

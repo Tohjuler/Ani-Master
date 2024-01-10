@@ -4,7 +4,6 @@ import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {getPageSession} from "@/lib/lucia";
 
-
 export default async function Home() {
     const session = await getPageSession();
 

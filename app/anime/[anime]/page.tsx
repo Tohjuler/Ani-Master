@@ -8,6 +8,7 @@ import Link from "next/link";
 import AnimeWatch from "@/components/animeWatch";
 import {AnimeWatchData} from "@/lib/dbUtil";
 import {query} from "@/lib/dbUtilActions";
+import Head from 'next/head'
 
 const messagePage = (title: string, message: string, session: any) => (
     <main className="">
@@ -31,6 +32,8 @@ const messagePage = (title: string, message: string, session: any) => (
     </main>
 )
 
+
+
 export default async function AnimePage({params, searchParams}: {
     params: { anime: string };
     searchParams?: { [key: string]: string | string[] | undefined };
@@ -39,6 +42,10 @@ export default async function AnimePage({params, searchParams}: {
     let watchData: AnimeWatchData | null = null;
     if (session)
         watchData = await query('SELECT * FROM anime_watch WHERE user_id = ? AND anime_id = ? LIMIT 1', [session.user.userId, params.anime]).then((res) => res[0] as AnimeWatchData).catch(() => null);
+    let settings: { default_provider_anime: string, default_dubbed_anime: number } | null = null;
+    if (session)
+        settings = await query('SELECT default_provider_anime, default_dubbed_anime FROM user WHERE id = ?', [session.user.userId]).then((res) => res[0] as { default_provider_anime: string, default_dubbed_anime: number }).catch(() => null);
+
     const animeId = params.anime;
 
     if (!animeId || animeId === "" || animeId === "undefined") return messagePage("Anime not found", "", session);
@@ -46,31 +53,15 @@ export default async function AnimePage({params, searchParams}: {
     const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime"));
 
     const res = await anilist.fetchAnimeInfo(animeId).catch(() => null);
-    const subEps = await anilist.fetchEpisodesListById(animeId, false, true).catch(() => null);
-    const dubEps = await anilist.fetchEpisodesListById(animeId, true, true).catch(() => null);
-
-    const currentEpNumber = searchParams?.ep as string || "1";
-    const dub: boolean = searchParams?.dub === "true" || false;
-    const currentEp = dub ? dubEps?.find((ep) => ep.number === parseInt(currentEpNumber)) : subEps?.find((ep) => ep.number === parseInt(currentEpNumber));
-
-    const currentEpSource = await anilist.fetchEpisodeSources(currentEp?.id || "").catch(() => null);
 
     if (!res) return messagePage("Anime not found", "", session);
 
-    const changeSetting = (key: string, value: string, base?: string): string => {
-        let url = new URL(base || process.env.NEXT_PUBLIC_BASE_URL + "/anime/" + animeId);
-        if (currentEpNumber !== "1")
-            url.searchParams.set("ep", currentEpNumber)
-        if (dub)
-            url.searchParams.set("dub", dub.toString())
-        if (searchParams?.provider)
-            url.searchParams.set("provider", searchParams.provider as string)
-        url.searchParams.set(key, value)
-        return url.toString();
-    }
     const title: string = typeof res.title === "string" ? (res.title as string) + "" : ((res.title as ITitle).userPreferred || (res.title as ITitle).romaji || (res.title as string) + "");
     return (
         <main className="">
+            <Head>
+                <title>Ani-Master | {title}</title>
+            </Head>
             <Header session={session} page="anime"/>
             <div className="h-fit mt-14">
                 <div className="grid grid-cols-4 gap-1">
@@ -101,24 +92,23 @@ export default async function AnimePage({params, searchParams}: {
                         </Card>
                     </div>
                     <div className="w-[97%] mx-auto col-span-3">
-                        <AnimeWatch session={session} watchData={watchData} animeId={animeId} searchParams={searchParams}/>
+                        <AnimeWatch
+                            session={session}
+                            watchData={watchData}
+                            settings={settings}
+                            animeId={animeId}
+                            searchParams={searchParams}
+                            animeInfo={{
+                                title: title,
+                                totalEpisodes: res.totalEpisodes || 0,
+                            }}
+                        />
                     </div>
                 </div>
             </div>
             <Footer/>
         </main>
     )
-}
-
-function getEpisodeList(episodes: IAnimeEpisode[], dub: boolean, changeSetting: (key: string, value: string, base?: string) => string) {
-    return episodes.map((episode) => {
-        return (
-            <Link href={changeSetting("ep", episode.number.toString(), dub ? changeSetting("dub", "true") : undefined)}
-                  key={episode.id}>
-                <h1 className={"m-1 rounded p-1 px-2 w-fit cursor-pointer " + (episode.isFiller ? "bg-[#c78e32]" : "bg-[#1f242b]")}>{episode.number} - {episode.title}</h1>
-            </Link>
-        )
-    })
 }
 
 export function getProvier(provider: string) {

@@ -193,8 +193,9 @@ export function Header(props: { session: any, page: 'home' | 'anime' | 'manga' }
                                     />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem>Account</DropdownMenuItem>
-                                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/account">Account</Link>
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem className="text-red-500">
                                         <Form action="/api/logout">
                                             <button type="submit">Log out</button>

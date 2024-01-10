@@ -29,8 +29,13 @@ CREATE TABLE IF NOT EXISTS anime_watch (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id VARCHAR(15) NOT NULL,
     anime_id VARCHAR(127) NOT NULL,
+    title VARCHAR(127) NOT NULL,
+    total_episodes INTEGER NOT NULL,
     current_episode VARCHAR(127) NOT NULL,
+    current_episode_number INTEGER NOT NULL,
+    current_episode_poster VARCHAR(255) NOT NULL,
     current_progress INTEGER NOT NULL,
+    current_progress_out_of INTEGER NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );

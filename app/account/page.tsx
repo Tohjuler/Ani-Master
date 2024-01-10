@@ -35,10 +35,6 @@ export default async function Account({params, searchParams}: {
                         />
                         <h1 className="mt-5">{session.user.username}</h1>
                     </div>
-
-                    <div className="mt-5">
-
-                    </div>
                 </div>
 
                 <AccSettings session={{...session, settings}}

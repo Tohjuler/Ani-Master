@@ -17,7 +17,6 @@
 * [Screenshots](#screenshots)
 * [Setup](#setup)
 * [Project Status](#project-status)
-* [Acknowledgements](#acknowledgements)
 
 
 ## ⚡General Information
@@ -47,19 +46,18 @@ So I decided to make my own.
 
 ## 🔥Features
 🟢List the ready features here:
-- None yet
+- Auth
+- Basic Anime Watching
 
 🟡Currently working on:
 - Main page
 - Anime page
 - Search page
+- Cache
 
 🔴Next features:
 - Main structure
   - More...
-- Auth
-- Basic Anime Watching
-- Cache
 
 ## 🎦Screenshots
 Anime search page (Work in progress, not finished)
@@ -87,7 +85,3 @@ Contributions can be given in the form of:
 - Documentation (PR)
 - Ideas (Issues)
 - Bug reports (Issues)
-
-## 🪙Acknowledgements
-Give credit here.
-- Maby coming...

@@ -5,7 +5,7 @@ import Hls from 'hls.js';
 import {Options} from 'plyr';
 import 'plyr/dist/plyr.css';
 
-export default function VideoPlayer(props: { src: string, className: string, postImage: string, referer?: string, startTime?: number, updateProgressData: (progress: number) => void }) {
+export default function VideoPlayer(props: { src: string, className: string, postImage: string, referer?: string, startTime?: number, updateProgressData: (progress: number, outOf: number) => void }) {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -72,11 +72,11 @@ export default function VideoPlayer(props: { src: string, className: string, pos
             // Update progress
             onEnded={() => {
                 if (!videoRef.current) return;
-                props.updateProgressData(videoRef.current.duration);
+                props.updateProgressData(videoRef.current.duration, videoRef.current.duration);
             }}
             onPause={() => {
                 if (!videoRef.current) return;
-                props.updateProgressData(videoRef.current.currentTime);
+                props.updateProgressData(videoRef.current.currentTime, videoRef.current.duration);
             }}
         />
     );
