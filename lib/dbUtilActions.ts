@@ -22,4 +22,25 @@ async function updateAnimeWatch(user_id: string, anime_id: string, current_episo
     }
 }
 
-export {query, updateAnimeWatch};
+async function updateAccSetting(user_id: string, key: string, value: string) {
+    if (!user_id || !key || !value) return;
+    if (key.includes(" ")) return;
+
+    const stmt = DbUtil.db.prepare("UPDATE user SET "+key+" = ? WHERE id = ?");
+    stmt.run(value, user_id);
+}
+
+async function updateNotificationSettings(userId: string, formData: FormData) {
+    const rawFormData = {
+        ntfyUrl: formData.get('notify_ntfy_url') as string,
+        ntfyToken: formData.get('notify_ntfy_token') as string,
+        discordUrl: formData.get('notify_discord_token') as string,
+    }
+    if (!rawFormData) return
+
+    await updateAccSetting(userId, 'notify_ntfy_url', rawFormData.ntfyUrl)
+    await updateAccSetting(userId, 'notify_ntfy_token', rawFormData.ntfyToken)
+    await updateAccSetting(userId, 'notify_discord_webhook', rawFormData.discordUrl)
+}
+
+export {query, updateAnimeWatch, updateAccSetting, updateNotificationSettings};
