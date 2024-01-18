@@ -1,10 +1,9 @@
 import {Header} from "@/components/header";
 import Footer from "@/components/footer";
 import {getPageSession} from "@/lib/lucia";
-import {IAnimeEpisode, ITitle, META, ANIME} from "@consumet/extensions";
+import {ITitle, META, ANIME} from "@consumet/extensions";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import parse from "html-react-parser";
-import Link from "next/link";
 import AnimeWatch from "@/components/animeWatch";
 import {AnimeWatchData} from "@/lib/dbUtil";
 import {query} from "@/lib/dbUtilActions";
@@ -33,7 +32,6 @@ const messagePage = (title: string, message: string, session: any) => (
 )
 
 
-
 export default async function AnimePage({params, searchParams}: {
     params: { anime: string };
     searchParams?: { [key: string]: string | string[] | undefined };
@@ -44,13 +42,20 @@ export default async function AnimePage({params, searchParams}: {
         watchData = await query('SELECT * FROM anime_watch WHERE user_id = ? AND anime_id = ? LIMIT 1', [session.user.userId, params.anime]).then((res) => res[0] as AnimeWatchData).catch(() => null);
     let settings: { default_provider_anime: string, default_dubbed_anime: number } | null = null;
     if (session)
-        settings = await query('SELECT default_provider_anime, default_dubbed_anime FROM user WHERE id = ?', [session.user.userId]).then((res) => res[0] as { default_provider_anime: string, default_dubbed_anime: number }).catch(() => null);
+        settings = await query('SELECT default_provider_anime, default_dubbed_anime FROM user WHERE id = ?', [session.user.userId]).then((res) => res[0] as {
+            default_provider_anime: string,
+            default_dubbed_anime: number
+        }).catch(() => null);
 
     const animeId = params.anime;
 
     if (!animeId || animeId === "" || animeId === "undefined") return messagePage("Anime not found", "", session);
 
-    const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime"));
+    const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime"), {
+        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
+        key: process.env.PROXY_KEY as string,
+        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
+    });
 
     const res = await anilist.fetchAnimeInfo(animeId).catch(() => null);
 

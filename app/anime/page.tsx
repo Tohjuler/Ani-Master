@@ -25,7 +25,11 @@ export default async function Anime({params, searchParams}: {
 }) {
     const session = await getPageSession();
 
-    const anilist = new META.Anilist();
+    const anilist = new META.Anilist(undefined, {
+        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
+        key: process.env.PROXY_KEY as string,
+        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
+    });
 
     let res: ISearch<IAnimeResult> | null = null;
     if (searchParams?.query)

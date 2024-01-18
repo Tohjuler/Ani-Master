@@ -17,7 +17,11 @@ export const GET = async (req: NextRequest, params: { params: { epid: string } }
 
     const searchParams = new URLSearchParams(req.nextUrl.searchParams);
 
-    const anilist = new META.Anilist(getProvier(searchParams.get('provider') || "Gogoanime"));
+    const anilist = new META.Anilist(getProvier(searchParams.get('provider') || "Gogoanime"), {
+        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
+        key: process.env.PROXY_KEY as string,
+        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
+    });
 
     // Get episode sources
     const currentEpSource: ISource | null = await anilist.fetchEpisodeSources(params.params.epid || "").catch(() => null);
@@ -31,6 +35,6 @@ export const GET = async (req: NextRequest, params: { params: { epid: string } }
         responseTime: performance.now() - start
     }
 
-    cacheData.put(req.nextUrl.href, data, 1000 * 60 * 30);
+    cacheData.put(req.nextUrl.href, data, 1000 * 60 * parseInt(process.env.CACHE_TIME as string));
     return NextResponse.json<WatchResponse>(data, {status: 200})
 }
