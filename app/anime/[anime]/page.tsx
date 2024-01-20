@@ -1,13 +1,14 @@
 import {Header} from "@/components/header";
 import Footer from "@/components/footer";
 import {getPageSession} from "@/lib/lucia";
-import {ITitle, META, ANIME} from "@consumet/extensions";
+import {ITitle, META} from "@consumet/extensions";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import parse from "html-react-parser";
 import AnimeWatch from "@/components/animeWatch";
 import {AnimeWatchData} from "@/lib/dbUtil";
 import {query} from "@/lib/dbUtilActions";
 import Head from 'next/head'
+import {getProvier} from "@/lib/utils";
 
 const messagePage = (title: string, message: string, session: any) => (
     <main className="">
@@ -51,7 +52,7 @@ export default async function AnimePage({params, searchParams}: {
 
     if (!animeId || animeId === "" || animeId === "undefined") return messagePage("Anime not found", "", session);
 
-    const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime"), {
+    const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime") as any, {
         url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
         key: process.env.PROXY_KEY as string,
         rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
@@ -114,31 +115,4 @@ export default async function AnimePage({params, searchParams}: {
             <Footer/>
         </main>
     )
-}
-
-export function getProvier(provider: string) {
-    switch (provider.toLowerCase()) {
-        case "9anime":
-            return new ANIME.NineAnime();
-        case "gogoanime":
-            return new ANIME.Gogoanime();
-        case "anify":
-            return new ANIME.Anify();
-        case "animefox":
-            return new ANIME.AnimeFox();
-        case "animepahe":
-            return new ANIME.AnimePahe();
-        case "animesaturn":
-            return new ANIME.AnimeSaturn();
-        case "bilibili":
-            return new ANIME.Bilibili();
-        case "crunchyroll":
-            return new ANIME.Crunchyroll();
-        case "marin":
-            return new ANIME.Marin();
-        case "zoro":
-            return new ANIME.Zoro();
-        default:
-            return new ANIME.Gogoanime();
-    }
 }

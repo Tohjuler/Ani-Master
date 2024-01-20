@@ -154,31 +154,36 @@ export function Header(props: { session: any, page: 'home' | 'anime' | 'manga' }
                                     </Form>
                                 </DialogContent>
                             </Dialog>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="secondary" className="ml-3">Signup</Button>
-                                </DialogTrigger>
-                                <DialogContent className="w-fit">
-                                    <DialogHeader>
-                                        <DialogTitle>Signup</DialogTitle>
-                                    </DialogHeader>
-                                    <Form action="/api/signup">
-                                        <div className="block">
-                                            <Input name="username" id="username" type="username" placeholder="Username"
-                                                   required minLength={4} maxLength={31}/>
-                                            <Input name="password" id="password" className="mt-3" type="password"
-                                                   required placeholder="Password"/>
-                                            <Input name="password2" id="password2" className="mt-3" type="password"
-                                                   required placeholder="Confirm Password"/>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button type="submit" className="mx-auto mt-4">
-                                                Signup
-                                            </Button>
-                                        </DialogFooter>
-                                    </Form>
-                                </DialogContent>
-                            </Dialog>
+                            {
+                                process.env.NEXT_PUBLIC_ALLOW_SIGNUP === 'true' && (
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="secondary" className="ml-3">Signup</Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="w-fit">
+                                            <DialogHeader>
+                                                <DialogTitle>Signup</DialogTitle>
+                                            </DialogHeader>
+                                            <Form action="/api/signup">
+                                                <div className="block">
+                                                    <Input name="username" id="username" type="username"
+                                                           placeholder="Username"
+                                                           required minLength={4} maxLength={31}/>
+                                                    <Input name="password" id="password" className="mt-3" type="password"
+                                                           required placeholder="Password"/>
+                                                    <Input name="password2" id="password2" className="mt-3" type="password"
+                                                           required placeholder="Confirm Password"/>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button type="submit" className="mx-auto mt-4">
+                                                        Signup
+                                                    </Button>
+                                                </DialogFooter>
+                                            </Form>
+                                        </DialogContent>
+                                    </Dialog>
+                                )
+                            }
                         </>
                     ) : (
                         <div className="mx-0.5 p-1 w-[65px] h-[65px]">
