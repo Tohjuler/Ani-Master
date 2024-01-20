@@ -1,6 +1,6 @@
+import { ANIME } from "@consumet/extensions";
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
-import {ANIME} from "../../../Node/local-packages/consumet.ts/src";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
