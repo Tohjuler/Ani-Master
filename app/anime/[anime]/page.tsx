@@ -8,7 +8,7 @@ import AnimeWatch from "@/components/animeWatch";
 import {AnimeWatchData} from "@/lib/dbUtil";
 import {query} from "@/lib/dbUtilActions";
 import Head from 'next/head'
-import {getProvier} from "@/lib/utils";
+import {getAnilist, getProvier} from "@/lib/utils";
 
 const messagePage = (title: string, message: string, session: any) => (
     <main className="">
@@ -52,11 +52,7 @@ export default async function AnimePage({params, searchParams}: {
 
     if (!animeId || animeId === "" || animeId === "undefined") return messagePage("Anime not found", "", session);
 
-    const anilist = new META.Anilist(getProvier(searchParams?.provider as string || "gogoanime") as any, {
-        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
-        key: process.env.PROXY_KEY as string,
-        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
-    });
+    const anilist = getAnilist(searchParams?.provider as string || "gogoanime")
 
     const res = await anilist.fetchAnimeInfo(animeId).catch(() => null);
 

@@ -2,7 +2,6 @@ import {Header} from "@/components/header";
 import Footer from "@/components/footer";
 import {getPageSession} from "@/lib/lucia";
 import AnimeSearch from "@/components/animeSearch";
-import axios from "axios";
 import parse from 'html-react-parser';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {
@@ -17,7 +16,7 @@ import {
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip"
 import Link from "next/link";
 import {IAnimeResult, ISearch, ITitle, META} from '@consumet/extensions';
-
+import {getAnilist} from "@/lib/utils";
 
 export default async function Anime({params, searchParams}: {
     params: { slug: string };
@@ -25,11 +24,7 @@ export default async function Anime({params, searchParams}: {
 }) {
     const session = await getPageSession();
 
-    const anilist = new META.Anilist(undefined, {
-        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
-        key: process.env.PROXY_KEY as string,
-        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
-    });
+    const anilist = getAnilist(undefined)
 
     let res: ISearch<IAnimeResult> | null = null;
     if (searchParams?.query)

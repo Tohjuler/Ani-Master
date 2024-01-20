@@ -1,4 +1,4 @@
-import { ANIME } from "@consumet/extensions";
+import {ANIME, META} from "@consumet/extensions";
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 
@@ -31,4 +31,14 @@ export function getProvier(provider: string) {
         default:
             return new ANIME.Gogoanime();
     }
+}
+
+export function getAnilist(provider: string | undefined) {
+    if (process.env.PROXY_ENABLED === "false") return new META.Anilist(getProvier(provider || "Gogoanime") as any);
+
+    return new META.Anilist(getProvier(provider || "Gogoanime") as any, {
+        url: (process.env.PROXY_URL as string).includes(",") ? (process.env.PROXY_URL as string).split(",") : (process.env.PROXY_URL as string),
+        key: process.env.PROXY_KEY as string,
+        rotateInterval: parseInt(process.env.PROXY_ROTATE_INTERVAL as string)
+    });
 }
